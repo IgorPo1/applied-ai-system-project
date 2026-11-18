@@ -109,7 +109,7 @@ python -m src.evaluator
 ### 6. Run all tests
 
 ```bash
-pytest
+python -m pytest
 ```
 
 ---
