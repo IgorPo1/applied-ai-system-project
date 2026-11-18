@@ -1,0 +1,21 @@
+flowchart TD
+    A([User Input\ngenre, mood, energy]) --> B[Input Guardrail\nguardrails.validate_user_profile]
+    B -- invalid --> C([Error Message\nto User])
+    B -- valid --> D[Song Catalog Loader\nrecommender.load_songs\ndata/songs.csv]
+    D --> E[Scoring Engine\nrecommender.score_song\ngenre +2.0, mood +1.0,\nenergy proximity 0-1]
+    E --> F[Recommender\nrecommender.recommend_songs\nranked top-K results]
+    F --> G[Confidence Scorer\nguardrails.confidence_score\nscore / max_score]
+    G --> H[Output Guardrail\nguardrails.flag_low_confidence\nwarn if confidence below 0.5]
+    H --> I([Recommendations\n+ explanations\n+ confidence scores])
+
+    subgraph Testing and Evaluation
+        J([Evaluation Harness\nsrc/evaluator.py]) --> D
+        J --> G
+        J --> K([Pass/Fail Table\nevaluation_results.md])
+        L([pytest\ntests/]) --> M([Test Results])
+    end
+
+    subgraph Human Review
+        I --> N([User reviews\nrecommendations])
+        K --> O([Instructor/Dev\nreviews test results])
+    end
